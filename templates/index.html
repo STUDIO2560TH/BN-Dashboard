@@ -61,51 +61,19 @@
 
     <div class="header">
         <h1>📈 Roblox Group Analytics Dashboard</h1>
-        <p>รายงานการวิเคราะห์รายได้และเกมของกลุ่ม Gn-Studios และ Nearo</p>
+        <p>รายงานการวิเคราะห์รายได้และเกมของกลุ่ม</p>
     </div>
     
     <div class="container">
         
-        <div class="group-card" id="group-35507841">
-            <h2>✨ กลุ่ม Gn-Studios (ID: 35507841)</h2>
-            
-            <h3>💰 รายได้กลุ่ม (Group Revenue Summary)</h3>
-            <div class="revenue-box">
-                ยอด Robux คงเหลือปัจจุบัน: <span id="current-robux-35507841">กำลังโหลด...</span>
-            </div>
-            
-            <h3>🕹️ รายการเกม/ประสบการณ์ทั้งหมด</h3>
-            <table class="game-table">
-                <thead>
-                    <tr>
-                        <th>ชื่อเกม</th>
-                        <th>Universe ID</th>
-                        <th>รายได้รวม (ตัวอย่าง)</th>
-                    </tr>
-                </thead>
-                <tbody id="game-list-35507841">
-                    <tr>
-                        <td>เกม A (ตัวอย่าง)</td>
-                        <td>1234567</td>
-                        <td>R$ 15,000</td>
-                    </tr>
-                    <tr>
-                        <td>เกม B (ตัวอย่าง)</td>
-                        <td>7654321</td>
-                        <td>R$ 5,000</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        {% for group in analysis_data %}
         
-        <hr>
-
-        <div class="group-card" id="group-6443807">
-            <h2>✨ กลุ่ม Nearo (ID: 6443807)</h2>
+        <div class="group-card" id="group-{{ group.group_id }}">
+            <h2>✨ กลุ่ม {{ group.group_name }} (ID: {{ group.group_id }})</h2>
             
             <h3>💰 รายได้กลุ่ม (Group Revenue Summary)</h3>
             <div class="revenue-box">
-                ยอด Robux คงเหลือปัจจุบัน: <span id="current-robux-6443807">กำลังโหลด...</span>
+                ยอด Robux คงเหลือปัจจุบัน: <span id="current-robux-{{ group.group_id }}">{{ group.current_robux }}</span>
             </div>
             
             <h3>🕹️ รายการเกม/ประสบการณ์ทั้งหมด</h3>
@@ -114,18 +82,27 @@
                     <tr>
                         <th>ชื่อเกม</th>
                         <th>Universe ID</th>
-                        <th>รายได้รวม (ตัวอย่าง)</th>
+                        <th>รายได้รวม</th>
                     </tr>
                 </thead>
-                <tbody id="game-list-6443807">
+                <tbody>
+                    {% for game in group.games_data %}
                     <tr>
-                        <td colspan="3">รอข้อมูลจาก API...</td>
+                        <td>{{ game.name }}</td>
+                        <td>{{ game.universeId }}</td>
+                        <td>{{ game.total_revenue }}</td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
 
-    </div>
+        {% if not loop.last %}
+        <hr>
+        {% endif %}
+
+        {% endfor %}
+        </div>
 
     <div class="header" style="padding: 10px 50px; font-size: 0.8em;">
         <p>ข้อมูล ณ วันที่: <span id="timestamp"></span></p>
@@ -136,12 +113,6 @@
         document.getElementById('timestamp').textContent = new Date().toLocaleString('th-TH', { 
             year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
         });
-
-        /* * หมายเหตุ: ในการใช้งานจริง
-         * ข้อมูลทั้งหมด (เช่น ยอด Robux และรายการเกม) จะถูกแทรกโดย 
-         * โค้ด Python/Flask/FastAPI ที่รันอยู่บน Render.com 
-         * โดยจะดึงข้อมูลจาก API แล้วส่งผลลัพธ์มาแสดงในส่วน HTML ที่มี ID ต่างๆ
-         */
     </script>
 </body>
 </html>
