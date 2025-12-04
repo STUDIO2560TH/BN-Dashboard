@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 import requests
 import pandas as pd
-import os # <--- เพิ่มบรรทัดนี้เข้ามา
+import os # <--- ต้องมีบรรทัดนี้เพื่อแก้ NameError
 from dotenv import load_dotenv
 
 # ----------------------------------------------
