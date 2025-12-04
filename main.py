@@ -2,7 +2,7 @@ from flask import Flask, render_template
 import requests
 import pandas as pd
 import os # <--- ต้องมีบรรทัดนี้เพื่อแก้ NameError
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # ----------------------------------------------
 # --- 1. การตั้งค่าเริ่มต้นและการยืนยันตัวตน ---
