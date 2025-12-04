@@ -2,7 +2,6 @@ from flask import Flask, render_template
 import requests
 import pandas as pd
 import os # <--- ต้องมีบรรทัดนี้เพื่อแก้ NameError
-# from dotenv import load_dotenv
 
 # ----------------------------------------------
 # --- 1. การตั้งค่าเริ่มต้นและการยืนยันตัวตน ---
@@ -81,7 +80,6 @@ def get_game_revenue_stats(universe_id, cookies):
 def fetch_and_analyze_data():
     """ฟังก์ชันรวมการดึงและวิเคราะห์ข้อมูลสำหรับทุกกลุ่ม"""
     # โหลด Environment Variables
-    # load_dotenv()
     ROBLOX_COOKIE = os.getenv("ROBLOX_COOKIE")
     GROUP_IDS = [int(g) for g in os.getenv("GROUP_IDS", "").split(',') if g.isdigit()]
     
