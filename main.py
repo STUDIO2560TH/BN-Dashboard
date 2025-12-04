@@ -21,9 +21,12 @@ def get_group_experiences(group_id, cookies):
         data = response.json()
         
         # กรองเอา PlaceId และ UniverseId
-        games = [{'name': item['name'], 'universeId': item['id'], 'placeId': item['placeId']} 
-                 for item in data.get('data', [])]
-        return games
+       games = [{'name': item['name'], 
+              'universeId': item.get('id'), # Universe ID 
+              'placeId': item.get('placeId')} # ใช้ .get() เพื่อหลีกเลี่ยง KeyError หาก PlaceId ไม่มี
+             for item in data.get('data', []) if item.get('id') is not None]
+    
+    return games
     except requests.RequestException:
         print(f"❌ Error ดึงเกมกลุ่ม {group_id} (อาจไม่มีเกมหรือ API มีปัญหา)")
         return []
