@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Group Analytics Dashboard</title>
+    <title>Roblox Group Player Statistics Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@
             padding: 20px;
             background-color: #ffffff;
         }
-        .revenue-box {
+        .player-box { /* เปลี่ยนชื่อเป็น player-box */
             background-color: #e6f7ff;
             border-left: 5px solid #007bff;
             padding: 15px;
@@ -60,8 +60,8 @@
 <body>
 
     <div class="header">
-        <h1>📈 Roblox Group Analytics Dashboard</h1>
-        <p>รายงานการวิเคราะห์รายได้และเกมของกลุ่ม</p>
+        <h1>📈 Roblox Group Player Statistics Dashboard</h1>
+        <p>รายงานจำนวนผู้เล่นและสถิติเกมของกลุ่ม (ใช้ Public API)</p>
     </div>
     
     <div class="container">
@@ -71,9 +71,9 @@
         <div class="group-card" id="group-{{ group.group_id }}">
             <h2>✨ กลุ่ม {{ group.group_name }} (ID: {{ group.group_id }})</h2>
             
-            <h3>💰 รายได้กลุ่ม (Group Revenue Summary)</h3>
-            <div class="revenue-box">
-                ยอด Robux คงเหลือปัจจุบัน: <span id="current-robux-{{ group.group_id }}">{{ group.current_robux }}</span>
+            <h3>👤 สถิติผู้เล่น (Player Summary)</h3>
+            <div class="player-box">
+                ยอดผู้เล่นรวมปัจจุบัน: <span id="total-players-{{ group.group_id }}">{{ group.total_players_summary }} คน</span>
             </div>
             
             <h3>🕹️ รายการเกม/ประสบการณ์ทั้งหมด</h3>
@@ -82,16 +82,14 @@
                     <tr>
                         <th>ชื่อเกม</th>
                         <th>Universe ID</th>
-                        <th>รายได้รวม (30 วันล่าสุด)</th>
-                    </tr>
+                        <th>ผู้เล่นปัจจุบัน</th> </tr>
                 </thead>
                 <tbody>
                     {% for game in group.games_data %}
                     <tr>
                         <td>{{ game.name }}</td>
                         <td>{{ game.universeId }}</td>
-                        <td>{{ game.total_revenue }}</td>
-                    </tr>
+                        <td>{{ game.current_players }}</td> </tr>
                     {% endfor %}
                 </tbody>
             </table>
