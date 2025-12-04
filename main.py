@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import requests
 import pandas as pd
+import os # <--- เพิ่มบรรทัดนี้เข้ามา
 from dotenv import load_dotenv
 
 # ----------------------------------------------
