@@ -13,23 +13,16 @@ app = Flask(__name__)
 # --- ฟังก์ชันดึงข้อมูล API (ต้องใช้ .ROBLOSECURITY Cookie) ---
 
 def get_group_experiences(group_id, cookies):
-    """ดึงรายการเกมทั้งหมดที่เป็นของกลุ่ม"""
-    url = f"https://games.roblox.com/v2/groups/{group_id}/games?sortOrder=Desc&limit=100"
-    try:
-        response = requests.get(url, cookies=cookies)
-        response.raise_for_status()
-        data = response.json()
-        
-        # กรองเอา PlaceId และ UniverseId
-       games = [{'name': item['name'], 
-              'universeId': item.get('id'), # Universe ID 
-              'placeId': item.get('placeId')} # ใช้ .get() เพื่อหลีกเลี่ยง KeyError หาก PlaceId ไม่มี
+    # ... (โค้ด API Request) ...
+    data = response.json()
+    
+    # แก้ไขการดึงข้อมูลโดยใช้ .get()
+    games = [{'name': item['name'], 
+              'universeId': item.get('id'), # ใช้ .get()
+              'placeId': item.get('placeId')} # ใช้ .get() เพื่อความปลอดภัย
              for item in data.get('data', []) if item.get('id') is not None]
     
     return games
-    except requests.RequestException:
-        print(f"❌ Error ดึงเกมกลุ่ม {group_id} (อาจไม่มีเกมหรือ API มีปัญหา)")
-        return []
 
 def get_group_current_robux(group_id, cookies):
     """ดึงยอด Robux คงเหลือปัจจุบันของกลุ่ม (ต้องใช้สิทธิ์)"""
