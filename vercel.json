@@ -1,6 +1,18 @@
 {
     "rewrites": [
         {
+            "source": "/favicon.ico",
+            "destination": "/static/icon.svg"
+        },
+        {
+            "source": "/favicon.png",
+            "destination": "/static/icon.svg"
+        },
+        {
+            "source": "/vite.svg",
+            "destination": "/static/icon.svg"
+        },
+        {
             "source": "/(.*)",
             "destination": "/main.py"
         }
