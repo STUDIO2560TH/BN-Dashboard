@@ -1,13 +1,8 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template
 import requests
 import os 
-import pandas as pd # ยังคงเก็บไว้เผื่อใช้ในการวิเคราะห์ข้อมูลอื่น ๆ
+import pandas as pd
 
-# ----------------------------------------------
-# --- 1. การตั้งค่าเริ่มต้นและ API สาธารณะ ---
-# ----------------------------------------------
-
-# สร้าง Flask Application
 # สร้าง Flask Application
 app = Flask(__name__, template_folder='.', static_folder='static')
 
@@ -21,14 +16,13 @@ def get_group_experiences(group_id):
         response.raise_for_status()
         data = response.json()
         
-        # กรองเอา PlaceId และ UniverseId และแก้ไข KeyError ด้วย .get()
         games = [{'name': item['name'], 
                   'universeId': item.get('id'), 
                   'placeId': item.get('placeId')} 
                  for item in data.get('data', []) if item.get('id') is not None]
         return games
     except requests.RequestException:
-        print(f"❌ Error ดึงเกมกลุ่ม {group_id} (อาจไม่มีเกมหรือ API มีปัญหา)")
+        print(f"❌ Error ดึงเกมกลุ่ม {group_id}")
         return []
 
 def get_game_player_counts(universe_ids):
@@ -37,7 +31,6 @@ def get_game_player_counts(universe_ids):
     if not universe_id_list:
         return {}
         
-    # API สำหรับดึงสถิติผู้เล่นปัจจุบัน
     url = "https://games.roblox.com/v1/games?"
     params = {'universeIds': universe_id_list}
     
@@ -46,7 +39,6 @@ def get_game_player_counts(universe_ids):
         response.raise_for_status()
         data = response.json()
         
-        # จัดรูปแบบผลลัพธ์เป็น Dictionary: {universeId: currentPlayers}
         player_counts = {item['id']: item.get('playing', 0) 
                          for item in data.get('data', [])}
         return player_counts
@@ -54,13 +46,8 @@ def get_game_player_counts(universe_ids):
         print(f"❌ Error ดึงจำนวนผู้เล่น: {e}")
         return {}
 
-# ------------------------------------------
-# --- 2. ฟังก์ชันรวมการวิเคราะห์ข้อมูล ---
-# ------------------------------------------
-
 def fetch_and_analyze_data():
     """ฟังก์ชันรวมการดึงและวิเคราะห์ข้อมูลผู้เล่นสำหรับทุกกลุ่ม"""
-    # ดึง GROUP_IDS เท่านั้น ไม่ใช้ ROBLOX_COOKIE
     GROUP_IDS = [int(g) for g in os.getenv("GROUP_IDS", "").split(',') if g.isdigit()]
     
     if not GROUP_IDS:
@@ -74,7 +61,6 @@ def fetch_and_analyze_data():
     group_games_map = {}
     all_universe_ids = []
     
-    # Phase 1: ดึงรายชื่อเกมทั้งหมดเพื่อรวบรวม Universe IDs
     for group_id in GROUP_IDS:
         group_name = GROUP_NAMES.get(group_id, f"Group {group_id}")
         games = get_group_experiences(group_id) 
@@ -86,16 +72,13 @@ def fetch_and_analyze_data():
         }
         all_universe_ids.extend([game['universeId'] for game in games])
 
-    # Phase 2: ดึงจำนวนผู้เล่นทั้งหมดในครั้งเดียว
     player_counts = get_game_player_counts(all_universe_ids)
 
-    # Phase 3: ผสานข้อมูลและสรุปผล
     analysis_results = []
     for group_id, group_data in group_games_map.items():
         total_players = 0
         for game in group_data['games_data']:
             uid = game['universeId']
-            # เพิ่มจำนวนผู้เล่นลงในข้อมูลเกม
             game['current_players'] = player_counts.get(uid, 0)
             total_players += game['current_players']
             
@@ -104,36 +87,12 @@ def fetch_and_analyze_data():
 
     return analysis_results
 
-# ------------------------------------------
-# --- 3. Flask Route ---
-# ------------------------------------------
-
 @app.route('/')
 def index():
     """Route หลักสำหรับแสดงผล Dashboard"""
     data = fetch_and_analyze_data()
-    
-    # ส่งข้อมูลที่วิเคราะห์แล้วไปยังไฟล์ index.html
     return render_template('index.html', analysis_data=data)
 
-@app.route('/favicon.ico')
-def favicon():
-    svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#007bff"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white">BN</text></svg>'''
-    return Response(svg_content, mimetype='image/svg+xml')
-
-@app.route('/vite.svg')
-def vite_svg():
-    svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#007bff"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white">BN</text></svg>'''
-    return Response(svg_content, mimetype='image/svg+xml')
-
-@app.route('/favicon.png')
-def favicon_png():
-    svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#007bff"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white">BN</text></svg>'''
-    return Response(svg_content, mimetype='image/svg+xml')
-
-
 if __name__ == '__main__':
-    # การตั้งค่าพอร์ตสำหรับ Render.com
     port = int(os.environ.get("PORT", 5000))
-    # ตั้ง host เป็น 0.0.0.0 เพื่อให้ Render เข้าถึงได้
     app.run(host='0.0.0.0', port=port)
