@@ -1,20 +1,20 @@
 {
-    "rewrites": [
+    "routes": [
         {
-            "source": "/favicon.ico",
-            "destination": "/static/icon.svg"
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
         },
         {
-            "source": "/favicon.png",
-            "destination": "/static/icon.svg"
+            "src": "/favicon.(ico|png)",
+            "dest": "/static/icon.svg"
         },
         {
-            "source": "/vite.svg",
-            "destination": "/static/icon.svg"
+            "src": "/vite.svg",
+            "dest": "/static/icon.svg"
         },
         {
-            "source": "/(.*)",
-            "destination": "/main.py"
+            "src": "/(.*)",
+            "dest": "/main.py"
         }
     ]
 }
