@@ -1,6 +1,13 @@
 {
-    "public": true,
     "routes": [
+        {
+            "src": "/vite.svg",
+            "dest": "/vite.svg"
+        },
+        {
+            "src": "/favicon.(ico|png)",
+            "dest": "/favicon.$1"
+        },
         {
             "src": "/static/(.*)",
             "dest": "/static/$1"
