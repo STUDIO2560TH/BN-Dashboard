@@ -67,7 +67,7 @@
             background-color: #f1f1f1;
         }
     </style>
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icon.svg') }}">
+
 </head>
 
 <body>
@@ -124,10 +124,15 @@
     </div>
 
     <script>
-        // ใช้ JavaScript เพื่ออัปเดต timestamp
+        // อัปเดต timestamp
         document.getElementById('timestamp').textContent = new Date().toLocaleString('th-TH', {
             year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
         });
+
+        // Auto-refresh ทุก 30 วินาที
+        setTimeout(function () {
+            location.reload();
+        }, 30000);
     </script>
 </body>
 
