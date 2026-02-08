@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 import requests
 import os 
 import pandas as pd # ยังคงเก็บไว้เผื่อใช้ในการวิเคราะห์ข้อมูลอื่น ๆ
@@ -118,16 +118,19 @@ def index():
 
 @app.route('/favicon.ico')
 def favicon():
-    return app.send_static_file('icon.svg')
+    svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#007bff"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white">BN</text></svg>'''
+    return Response(svg_content, mimetype='image/svg+xml')
 
 @app.route('/vite.svg')
 def vite_svg():
-    # Return 404 or a dummy file to stop the noise, but best to serve the icon if requested
-    return app.send_static_file('icon.svg')
+    svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#007bff"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white">BN</text></svg>'''
+    return Response(svg_content, mimetype='image/svg+xml')
 
 @app.route('/favicon.png')
 def favicon_png():
-    return app.send_static_file('icon.svg')
+    svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#007bff"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white">BN</text></svg>'''
+    return Response(svg_content, mimetype='image/svg+xml')
+
 
 if __name__ == '__main__':
     # การตั้งค่าพอร์ตสำหรับ Render.com
