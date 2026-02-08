@@ -116,6 +116,15 @@ def index():
     # ส่งข้อมูลที่วิเคราะห์แล้วไปยังไฟล์ index.html
     return render_template('index.html', analysis_data=data)
 
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('icon.svg')
+
+@app.route('/vite.svg')
+def vite_svg():
+    # Return 404 or a dummy file to stop the noise, but best to serve the icon if requested
+    return app.send_static_file('icon.svg')
+
 if __name__ == '__main__':
     # การตั้งค่าพอร์ตสำหรับ Render.com
     port = int(os.environ.get("PORT", 5000))
