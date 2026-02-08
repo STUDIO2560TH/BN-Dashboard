@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Group Player Statistics Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #007bff;
+            /* สีน้ำเงิน Roblox */
+            color: white;
+            padding: 20px 50px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .group-card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .player-box {
+            /* เปลี่ยนชื่อเป็น player-box */
+            background-color: #e6f7ff;
+            border-left: 5px solid #007bff;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .game-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .game-table th,
+        .game-table td {
+            border: 1px solid #eee;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .game-table th {
+            background-color: #f1f1f1;
+        }
+    </style>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icon.svg') }}">
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>📈 Roblox Group Player Statistics Dashboard</h1>
+        <p>รายงานจำนวนผู้เล่นและสถิติเกมของกลุ่ม (ใช้ Public API)</p>
+    </div>
+
+    <div class="container">
+
+        {% for group in analysis_data %}
+
+        <div class="group-card" id="group-{{ group.group_id }}">
+            <h2>✨ กลุ่ม {{ group.group_name }} (ID: {{ group.group_id }})</h2>
+
+            <h3>👤 สถิติผู้เล่น (Player Summary)</h3>
+            <div class="player-box">
+                ยอดผู้เล่นรวมปัจจุบัน: <span id="total-players-{{ group.group_id }}">{{ group.total_players_summary }}
+                    คน</span>
+            </div>
+
+            <h3>🕹️ รายการเกม/ประสบการณ์ทั้งหมด</h3>
+            <table class="game-table">
+                <thead>
+                    <tr>
+                        <th>ชื่อเกม</th>
+                        <th>Universe ID</th>
+                        <th>ผู้เล่นปัจจุบัน</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for game in group.games_data %}
+                    <tr>
+                        <td>{{ game.name }}</td>
+                        <td>{{ game.universeId }}</td>
+                        <td>{{ game.current_players }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if not loop.last %}
+        <hr>
+        {% endif %}
+
+        {% endfor %}
+
+    </div>
+
+    <div class="header" style="padding: 10px 50px; font-size: 0.8em;">
+        <p>ข้อมูล ณ วันที่: <span id="timestamp"></span></p>
+    </div>
+
+    <script>
+        // ใช้ JavaScript เพื่ออัปเดต timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleString('th-TH', {
+            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+    </script>
+</body>
+
+</html>
